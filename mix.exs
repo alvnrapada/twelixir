@@ -1,13 +1,32 @@
 defmodule Twilixir.MixProject do
   use Mix.Project
 
+  @project_url "https://github.com/alvnrapada/twilixir.git"
+
   def project do
     [
       app: :twilixir,
       version: "0.1.0",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      name: "Twilixir",
+      source_url: @project_url,
+      homepage_url: @project_url,
+      description: "Twilio Conversation API Integration for Elixir",
+      package: package(),
+      docs: [
+        main: "readme",
+        extras: ["README.md"]
+      ]
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Alvin Rapada"],
+      licenses: ["MIT"],
+      links: %{"Github" => @project_url}
     ]
   end
 

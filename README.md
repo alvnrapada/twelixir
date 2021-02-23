@@ -1,6 +1,6 @@
 # Twilixir
 
-Twilio Conversation API Integration in Elixir
+Twilio Conversation API Integration for Elixir
 
 ## Installation
 
