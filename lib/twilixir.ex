@@ -243,7 +243,6 @@ defmodule Twilixir do
   ## Examples
 
       iex> Twilixir.delete_conversation("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-      Success - Deleted
       :ok
 
   """
