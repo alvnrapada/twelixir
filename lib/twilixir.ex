@@ -1,6 +1,7 @@
 defmodule Twilixir do
   @moduledoc """
-  Documentation for `Twilixir`.
+  Twilio Conversation API Integration for Elixir.
+  For more information please visit  [Twilio Conversations Documentation](https://www.twilio.com/docs/conversations/quickstart)
   """
 
   @base_twilio_url "https://conversations.twilio.com/v1/Conversations/"
