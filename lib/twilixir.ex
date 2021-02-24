@@ -4,7 +4,31 @@ defmodule Twilixir do
   """
 
   @base_twilio_url "https://conversations.twilio.com/v1/Conversations/"
+  @doc """
+  Creates a new conversation
+  ## Examples
+  iex> Twilixir.create_conversation("Alvin - Sample", %{status: "active"})
+  %{
+    "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "attributes" => "{\"status\":\"active\"}",
+    "chat_service_sid" => "CXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "date_created" => "2021-02-24T02:04:36Z",
+    "date_updated" => "2021-02-24T02:04:36Z",
+    "friendly_name" => "Alvin - Sample",
+    "links" => %{
+      "messages" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages",
+      "participants" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants",
+      "webhooks" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Webhooks"
+    },
+    "messaging_service_sid" => "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "state" => "active",
+    "timers" => %{},
+    "unique_name" => nil,
+    "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  }
 
+  """
   def create_conversation(friendly_name, attrs) do
     api_url = "#{@base_twilio_url}"
 
@@ -14,28 +38,55 @@ defmodule Twilixir do
     }
 
     api_post_request(api_url, body)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def get_conversation(conversation_id) do
-    api_url = "#{@base_twilio_url}#{conversation_id}"
+  @doc """
+  Get a conversation
+  ## Valid Param
+  iex> Twilixir.get_conversation("SIDXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    %{
+      "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "attributes" => "{\"status\":\"active\"}",
+      "chat_service_sid" => "ISXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "date_created" => "2021-02-24T02:04:36Z",
+      "date_updated" => "2021-02-24T02:04:36Z",
+      "friendly_name" => "Alvin - Sample",
+      "links" => %{
+        "messages" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages",
+        "participants" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants",
+        "webhooks" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Webhooks"
+      },
+      "messaging_service_sid" => "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "sid" => "SIDXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "state" => "active",
+      "timers" => %{},
+      "unique_name" => nil,
+      "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    }
+
+  ## Invalid Param
+  iex> Twilixir.get_conversation("INVALID_XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    %{
+      "code" => 20404,
+      "message" => "The requested resource /Conversations/INVALID_XXXXXXXXXXXXXXXXXXXXXXXXXXXXX was not found",
+      "more_info" => "https://www.twilio.com/docs/errors/20404",
+      "status" => 404
+    }
+  """
+  def get_conversation(conversation_sid) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}"
 
     api_get_request(api_url)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
   def get_multiple_conversations(page_size \\ 50) do
     api_url = "#{@base_twilio_url}?PageSize=#{page_size}"
 
     api_get_request(api_url)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def update_conversation(conversation_id, new_attrs) do
-    api_url = "#{@base_twilio_url}#{conversation_id}"
+  def update_conversation(conversation_sid, new_attrs) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}"
 
     body = %{
       State: "active",
@@ -43,23 +94,21 @@ defmodule Twilixir do
     }
 
     api_post_request(api_url, body)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def delete_conversation(conversation_id) do
-    api_url = "#{@base_twilio_url}#{conversation_id}"
+  def delete_conversation(conversation_sid) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}"
     api_delete_request(api_url)
   end
 
   def create_participant_sms(
-        conversation_id,
+        conversation_sid,
         phone_number,
         country_code,
         twilio_proxy_mobile,
         attrs
       ) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Participants"
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants"
 
     participant_mobile = validate_mobile(phone_number, country_code)
 
@@ -70,12 +119,10 @@ defmodule Twilixir do
     }
 
     api_post_request(api_url, body)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def create_participant_chat(conversation_id, indentity, attrs) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Participants"
+  def create_participant_chat(conversation_sid, indentity, attrs) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants"
 
     body = %{
       Attributes: attrs |> Jason.encode!(),
@@ -83,45 +130,37 @@ defmodule Twilixir do
     }
 
     api_post_request(api_url, body)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def get_participant(conversation_id, participant_id) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Participants/#{participant_id}"
+  def get_participant(conversation_sid, participant_id) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants/#{participant_id}"
 
     api_get_request(api_url)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def get_multiple_participants(conversation_id, page_size \\ 50) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Participants?PageSize=#{page_size}"
+  def get_multiple_participants(conversation_sid, page_size \\ 50) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants?PageSize=#{page_size}"
 
     api_get_request(api_url)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def update_participant(conversation_id, participant_id, attrs) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Participants/#{participant_id}"
+  def update_participant(conversation_sid, participant_id, attrs) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants/#{participant_id}"
 
     body = %{
       Attributes: attrs |> Jason.encode!()
     }
 
     api_post_request(api_url, body)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def delete_participant(conversation_id, participant_id) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Participants/#{participant_id}"
+  def delete_participant(conversation_sid, participant_id) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants/#{participant_id}"
     api_delete_request(api_url)
   end
 
-  def create_message(conversation_id, author, message_body, attrs) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Messages"
+  def create_message(conversation_sid, author, message_body, attrs) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages"
 
     body = %{
       Author: author,
@@ -130,28 +169,22 @@ defmodule Twilixir do
     }
 
     api_post_request(api_url, body)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def get_message(conversation_id, message_id) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Messages/#{message_id}"
+  def get_message(conversation_sid, message_id) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages/#{message_id}"
 
     api_get_request(api_url)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def get_multiple_messages(conversation_id, page_size \\ 50) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Messages?PageSize=#{page_size}"
+  def get_multiple_messages(conversation_sid, page_size \\ 50) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages?PageSize=#{page_size}"
 
     api_get_request(api_url)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def update_message(conversation_id, message_id, message_body, attrs) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Messages/#{message_id}"
+  def update_message(conversation_sid, message_id, message_body, attrs) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages/#{message_id}"
 
     body = %{
       Attributes: attrs |> Jason.encode!(),
@@ -163,8 +196,8 @@ defmodule Twilixir do
     |> Jason.decode!()
   end
 
-  def delete_message(conversation_id, message_id) do
-    api_url = "#{@base_twilio_url}#{conversation_id}/Messages/#{message_id}"
+  def delete_message(conversation_sid, message_id) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages/#{message_id}"
     api_delete_request(api_url)
   end
 
@@ -181,6 +214,8 @@ defmodule Twilixir do
     with auth <- get_twilio_auth(),
          {:ok, api_response} <- HTTPoison.get(api_url, [], hackney: auth) do
       api_response
+      |> Map.fetch!(:body)
+      |> Jason.decode!()
     else
       {:error, error} ->
         {:error, error}
@@ -196,6 +231,8 @@ defmodule Twilixir do
          encoded_body <- URI.encode_query(body),
          {:ok, api_response} <- HTTPoison.post(api_url, encoded_body, headers, hackney: auth) do
       api_response
+      |> Map.fetch!(:body)
+      |> Jason.decode!()
     else
       {:error, error} ->
         {:error, error}
@@ -222,14 +259,11 @@ defmodule Twilixir do
      - You can look up the phone carrier info with '?Type=carrier'; BUT IT COSTS EXTRA
      - You can attempt to lookup up the persons information with '?Type=caller-name'; BUT IT COSTS EXTRA
   """
-  defp validate_mobile(phone_number, country_code) do
+  def validate_mobile(phone_number, country_code) do
     api_url =
       "https://lookups.twilio.com/v1/PhoneNumbers/#{phone_number}?CountryCode=#{country_code}"
 
-    api_response =
-      api_get_request(api_url)
-      |> Map.fetch!(:body)
-      |> Jason.decode!()
+    api_response = api_get_request(api_url)
 
     case api_response["phone_number"] do
       nil -> false
