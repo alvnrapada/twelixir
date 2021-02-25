@@ -1,10 +1,10 @@
-defmodule TwilixirTest do
+defmodule TwelixirTest do
   use ExUnit.Case
-  doctest Twilixir
+  doctest Twelixir
 
   setup do
     %{"sid" => sid} =
-      Twilixir.create_conversation("Sample Create Conversation", %{status: "active"})
+      Twelixir.create_conversation("Sample Create Conversation", %{status: "active"})
 
     %{
       sid: sid
@@ -30,7 +30,7 @@ defmodule TwilixirTest do
              "timers" => _,
              "unique_name" => _,
              "url" => _
-           } = Twilixir.create_conversation("Sample Create Conversation", %{status: "active"})
+           } = Twelixir.create_conversation("Sample Create Conversation", %{status: "active"})
   end
 
   test "get_conversation/1", %{sid: sid} do
@@ -52,11 +52,11 @@ defmodule TwilixirTest do
              "timers" => _,
              "unique_name" => _,
              "url" => _
-           } = Twilixir.get_conversation(sid)
+           } = Twelixir.get_conversation(sid)
   end
 
   test "get_multiple_conversations/2" do
-    assert %{"conversations" => conversations} = Twilixir.get_multiple_conversations(1, 1)
+    assert %{"conversations" => conversations} = Twelixir.get_multiple_conversations(1, 1)
     assert conversations |> Enum.count() == 1
   end
 end

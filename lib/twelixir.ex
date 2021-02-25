@@ -1,4 +1,4 @@
-defmodule Twilixir do
+defmodule Twelixir do
   @moduledoc """
   Twilio Conversation API Integration for Elixir.
   For more information please visit  [Twilio Conversations Documentation](https://www.twilio.com/docs/conversations/quickstart)
@@ -14,7 +14,7 @@ defmodule Twilixir do
 
   ## Examples
 
-      iex> Twilixir.create_conversation("Alvin - Sample", %{status: "active"})
+      iex> Twelixir.create_conversation("Alvin - Sample", %{status: "active"})
       %{
         "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "attributes" => "{\"status\":\"active\"}",
@@ -55,7 +55,7 @@ defmodule Twilixir do
 
   ## Examples 
 
-      iex> Twilixir.get_conversation("SIDXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      iex> Twelixir.get_conversation("SIDXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
       %{
         "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "attributes" => "{\"status\":\"active\"}",
@@ -92,7 +92,7 @@ defmodule Twilixir do
 
   ## Examples
     
-      iex> Twilixir.get_multiple_conversations(1, 2)
+      iex> Twelixir.get_multiple_conversations(1, 2)
       %{
         "conversations" => [
           %{
@@ -139,7 +139,7 @@ defmodule Twilixir do
 
   ## Examples
 
-      iex> Twilixir.get_all_conversations()
+      iex> Twelixir.get_all_conversations()
       %{
         "conversations" => [
           %{
@@ -191,7 +191,7 @@ defmodule Twilixir do
 
   ## Examples
 
-      iex> Twilixir.update_conversation("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", %{status: "inactive"}, "inactive")
+      iex> Twelixir.update_conversation("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", %{status: "inactive"}, "inactive")
       %{
         "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "attributes" => "{\"status\":\"inactive\"}",
@@ -232,7 +232,7 @@ defmodule Twilixir do
 
   ## Examples
 
-      iex> Twilixir.delete_conversation("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      iex> Twelixir.delete_conversation("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
       :ok
 
   """
@@ -271,7 +271,7 @@ defmodule Twilixir do
 
   ## Examples
 
-      iex> Twilixir.create_participant_chat("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "AlvinIdentity", %{type: "web"})
+      iex> Twelixir.create_participant_chat("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "AlvinIdentity", %{type: "web"})
       %{
         "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "attributes" => "{\"type\":\"web\"}",
@@ -308,7 +308,7 @@ defmodule Twilixir do
 
   ## Examples
 
-      iex> Twilixir.get_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      iex> Twelixir.get_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
       %{
         "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "attributes" => "{\"type\":\"web\"}",
@@ -341,7 +341,7 @@ defmodule Twilixir do
 
   ## Examples
     
-      iex> Twilixir.get_multiple_participants("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 0, 2)
+      iex> Twelixir.get_multiple_participants("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 0, 2)
       %{
         "meta" => %{
           "first_page_url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants?PageSize=1&Page=0",
@@ -387,7 +387,7 @@ defmodule Twilixir do
 
   ## Examples
     
-      iex> Twilixir.get_all_participants("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      iex> Twelixir.get_all_participants("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
       %{
         "meta" => %{
           "first_page_url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants?PageSize=50&Page=0",
@@ -434,7 +434,7 @@ defmodule Twilixir do
 
   ## Examples
     
-      iex> Twilixir.update_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", %{type: "WhatsApp"})
+      iex> Twelixir.update_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", %{type: "WhatsApp"})
       %{
         "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "attributes" => "{\"type\":\"WhatsApp\"}",
@@ -470,7 +470,7 @@ defmodule Twilixir do
 
   ## Examples
     
-      iex> Twilixir.deletej_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      iex> Twelixir.deletej_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
       :ok
 
   """
@@ -522,8 +522,8 @@ defmodule Twilixir do
   end
 
   defp get_twilio_auth() do
-    twilio_access_token_id = Application.get_env(:twilixir, :twilio_access_token_id)
-    twilio_secret_key = Application.get_env(:twilixir, :twilio_secret_key)
+    twilio_access_token_id = Application.get_env(:twelixir, :twilio_access_token_id)
+    twilio_secret_key = Application.get_env(:twelixir, :twilio_secret_key)
 
     [basic_auth: {twilio_access_token_id, twilio_secret_key}]
   end
