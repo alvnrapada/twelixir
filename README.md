@@ -14,6 +14,17 @@ def deps do
 end
 ```
 
+## Prerequisite 
+
+```elixir
+def deps do
+  [
+    {:httpoison, "~> 1.8"},
+    {:jason, "~> 1.2"}
+  ]
+end
+```
+
 ## Setup 
 
 Go to your  `/config.exs` and setup twelixir config keys:
