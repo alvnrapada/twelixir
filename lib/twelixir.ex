@@ -503,7 +503,7 @@ defmodule Twelixir do
 
   ## Examples
     
-      iex> Twelixir.deletej_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      iex> Twelixir.delete_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
       :ok
 
   """
