@@ -31,8 +31,8 @@ Go to your  `/config.exs` and setup twelixir config keys:
 
 ```elixir
 config :twelixir,
-  twilio_secret_key: "YOUR_TWILIO_SECRET_KEY",
-  twilio_access_token_id: "YOUR_TWILIO_ACCESS_TOKEN_ID"
+  twilio_access_token_id: "YOUR_TWILIO_ACCESS_TOKEN_ID",
+  twilio_secret_key: "YOUR_TWILIO_SECRET_KEY"
 ```
 
 ## Usage 
