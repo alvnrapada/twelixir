@@ -53,7 +53,7 @@ defmodule Twilixir do
   Parameters
   - conversation_sid: coversation's sid
 
-  ## Valid Param
+  ## Examples 
 
       iex> Twilixir.get_conversation("SIDXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
       %{
@@ -76,16 +76,6 @@ defmodule Twilixir do
         "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
       }
 
-  ## Invalid Param
-
-      iex> Twilixir.get_conversation("INVALID_XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-      %{
-        "code" => 20404,
-        "message" => "The requested resource /Conversations/INVALID_XXXXXXXXXXXXXXXXXXXXXXXXXXXXX was not found",
-        "more_info" => "https://www.twilio.com/docs/errors/20404",
-        "status" => 404
-      }
-
   """
   def get_conversation(conversation_sid) do
     api_url = "#{@base_twilio_url}#{conversation_sid}"
@@ -98,7 +88,7 @@ defmodule Twilixir do
 
   Parameters
   - page: current page
-  - page_size: Conversation Size Per Page
+  - page_size: conversation size per page
 
   ## Examples
     
@@ -271,6 +261,33 @@ defmodule Twilixir do
     api_post_request(api_url, body)
   end
 
+  @doc """
+  Creates a participant on a conversation
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - indentity: unique participant identity (can be user.id) 
+  - attrs: map (you can put any field you want for you own needs)
+
+  ## Examples
+
+      iex> Twilixir.create_participant_chat("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "AlvinIdentity", %{type: "web"})
+      %{
+        "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "attributes" => "{\"type\":\"web\"}",
+        "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "date_created" => "2021-02-25T07:46:00Z",
+        "date_updated" => "2021-02-25T07:46:00Z",
+        "identity" => "AlvinIdentity",
+        "last_read_message_index" => nil,
+        "last_read_timestamp" => nil,
+        "messaging_binding" => nil,
+        "role_sid" => "RLXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "sid" => "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants/MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      }
+
+  """
   def create_participant_chat(conversation_sid, indentity, attrs) do
     api_url = "#{@base_twilio_url}#{conversation_sid}/Participants"
 
@@ -282,20 +299,160 @@ defmodule Twilixir do
     api_post_request(api_url, body)
   end
 
-  def get_participant(conversation_sid, participant_id) do
-    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants/#{participant_id}"
+  @doc """
+  Gets a specific participant
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - participant_sid: coversation's sid
+
+  ## Examples
+
+      iex> Twilixir.get_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      %{
+        "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "attributes" => "{\"type\":\"web\"}",
+        "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "date_created" => "2021-02-25T07:46:00Z",
+        "date_updated" => "2021-02-25T07:46:00Z",
+        "identity" => "AlvinIdentity",
+        "last_read_message_index" => nil,
+        "last_read_timestamp" => nil,
+        "messaging_binding" => nil,
+        "role_sid" => "RXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "sid" => "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants/MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      }
+
+  """
+  def get_participant(conversation_sid, participant_sid) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants/#{participant_sid}"
 
     api_get_request(api_url)
   end
 
-  def get_multiple_participants(conversation_sid, page_size \\ 50) do
-    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants?PageSize=#{page_size}"
+  @doc """
+  Gets multiple participants (with pagination)
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - page: current page
+  - page_size: conversation size per page
+
+  ## Examples
+    
+      iex> Twilixir.get_multiple_participants("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 0, 2)
+      %{
+        "meta" => %{
+          "first_page_url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants?PageSize=1&Page=0",
+          "key" => "participants",
+          "next_page_url" => nil,
+          "page" => 0,
+          "page_size" => 1,
+          "previous_page_url" => nil,
+          "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants?PageSize=1&Page=0"
+        },
+        "participants" => [
+          %{
+            "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "attributes" => "{\"type\":\"web\"}",
+            "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "date_created" => "2021-02-25T07:46:00Z",
+            "date_updated" => "2021-02-25T07:46:00Z",
+            "identity" => "AlvinIdentity",
+            "last_read_message_index" => nil,
+            "last_read_timestamp" => nil,
+            "messaging_binding" => nil,
+            "role_sid" => "RXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "sid" => "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants/MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+          },
+          ...
+        ]
+      }
+
+  """
+  def get_multiple_participants(conversation_sid, page \\ 0, page_size \\ 50) do
+    api_url =
+      "#{@base_twilio_url}#{conversation_sid}/Participants?Page=#{page}&PageSize=#{page_size}"
 
     api_get_request(api_url)
   end
 
-  def update_participant(conversation_sid, participant_id, attrs) do
-    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants/#{participant_id}"
+  @doc """
+  Gets all participants
+
+  Parameters
+  - conversation_sid: coversation's sid
+
+  ## Examples
+    
+      iex> Twilixir.get_all_participants("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      %{
+        "meta" => %{
+          "first_page_url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants?PageSize=50&Page=0",
+          "key" => "participants",
+          "next_page_url" => nil,
+          "page" => 0,
+          "page_size" => 50,
+          "previous_page_url" => nil,
+          "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants?PageSize=50&Page=0"
+        },
+        "participants" => [
+          %{
+            "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "attributes" => "{\"type\":\"web\"}",
+            "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "date_created" => "2021-02-25T07:46:00Z",
+            "date_updated" => "2021-02-25T07:46:00Z",
+            "identity" => "AlvinIdentity",
+            "last_read_message_index" => nil,
+            "last_read_timestamp" => nil,
+            "messaging_binding" => nil,
+            "role_sid" => "RXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "sid" => "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants/MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+          },
+          ...
+        ]
+      }
+
+  """
+  def get_all_participants(conversation_sid) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants"
+
+    api_get_request(api_url)
+  end
+
+  @doc """
+  Update participant 
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - participant_sid: participant's sid
+  - attrs: map (you can put any field you want for you own needs)
+
+  ## Examples
+    
+      iex> Twilixir.update_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", %{type: "WhatsApp"})
+      %{
+        "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "attributes" => "{\"type\":\"WhatsApp\"}",
+        "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "date_created" => "2021-02-25T07:46:00Z",
+        "date_updated" => "2021-02-25T08:07:35Z",
+        "identity" => "AlvinIdentity",
+        "last_read_message_index" => nil,
+        "last_read_timestamp" => nil,
+        "messaging_binding" => nil,
+        "role_sid" => "RXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "sid" => "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants/MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      }
+
+  """
+  def update_participant(conversation_sid, participant_sid, attrs) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants/#{participant_sid}"
 
     body = %{
       Attributes: attrs |> Jason.encode!()
@@ -304,8 +461,21 @@ defmodule Twilixir do
     api_post_request(api_url, body)
   end
 
-  def delete_participant(conversation_sid, participant_id) do
-    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants/#{participant_id}"
+  @doc """
+  Delete participant 
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - participant_sid: participant's sid
+
+  ## Examples
+    
+      iex> Twilixir.deletej_participant("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      :ok
+
+  """
+  def delete_participant(conversation_sid, participant_sid) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Participants/#{participant_sid}"
     api_delete_request(api_url)
   end
 
@@ -352,8 +522,8 @@ defmodule Twilixir do
   end
 
   defp get_twilio_auth() do
-    twilio_access_token_id = "SK5838ab85c63e197b5e5c3a95d4950238"
-    twilio_secret_key = "ilrJMRSOxxYhFlUyX4b49Rhs16qgANCP"
+    twilio_access_token_id = Application.get_env(:twilixir, :twilio_access_token_id)
+    twilio_secret_key = Application.get_env(:twilixir, :twilio_secret_key)
 
     [basic_auth: {twilio_access_token_id, twilio_secret_key}]
   end
