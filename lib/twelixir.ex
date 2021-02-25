@@ -337,7 +337,7 @@ defmodule Twelixir do
   Parameters
   - conversation_sid: coversation's sid
   - page: current page
-  - page_size: conversation size per page
+  - page_size: participants size per page
 
   ## Examples
     
@@ -479,6 +479,38 @@ defmodule Twelixir do
     api_delete_request(api_url)
   end
 
+  @doc """
+  Creates a message 
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - author: message author (:string)
+  - message_body: the actual message
+  - attrs: map (you can put any field you want for you own needs) - In my case this is where I monitor the message's read and unread state.
+
+  ## Examples
+    
+      iex> Twelixir.create_message("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "Sample Author", "Hi?", %{status: "unread"})
+      %{
+        "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "attributes" => "{\"status\":\"unread\"}",
+        "author" => "Sample Author",
+        "body" => "Hi?",
+        "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "date_created" => "2021-02-25T10:28:38Z",
+        "date_updated" => "2021-02-25T10:28:38Z",
+        "delivery" => nil,
+        "index" => 0,
+        "links" => %{
+          "delivery_receipts" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Receipts"
+        },
+        "media" => nil,
+        "participant_sid" => nil,
+        "sid" => "IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      }
+
+  """
   def create_message(conversation_sid, author, message_body, attrs) do
     api_url = "#{@base_twilio_url}#{conversation_sid}/Messages"
 
@@ -491,20 +523,176 @@ defmodule Twelixir do
     api_post_request(api_url, body)
   end
 
-  def get_message(conversation_sid, message_id) do
-    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages/#{message_id}"
+  @doc """
+  Gets a message 
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - message_sid: message's sid
+
+  ## Examples
+    
+      iex> Twelixir.get_message("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      %{
+        "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "attributes" => "{\"status\":\"unread\"}",
+        "author" => "Sample Author",
+        "body" => "Hi?",
+        "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "date_created" => "2021-02-25T10:28:38Z",
+        "date_updated" => "2021-02-25T10:28:38Z",
+        "delivery" => nil,
+        "index" => 0,
+        "links" => %{
+          "delivery_receipts" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Receipts"
+        },
+        "media" => nil,
+        "participant_sid" => nil,
+        "sid" => "IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      }
+
+  """
+  def get_message(conversation_sid, message_sid) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages/#{message_sid}"
 
     api_get_request(api_url)
   end
 
-  def get_multiple_messages(conversation_sid, page_size \\ 50) do
-    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages?PageSize=#{page_size}"
+  @doc """
+  Gets multiple messages (with pagination)
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - page: current page
+  - page_size: messages size per page
+
+  ## Examples
+    
+      iex> Twelixir.get_multiple_messages("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 0, 2)
+      %{
+        "messages" => [
+          %{
+            "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "attributes" => "{\"status\":\"unread\"}",
+            "author" => "Sample Author",
+            "body" => "Hi?",
+            "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "date_created" => "2021-02-25T10:28:38Z",
+            "date_updated" => "2021-02-25T10:28:38Z",
+            "delivery" => nil,
+            "index" => 0,
+            "links" => %{
+              "delivery_receipts" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Receipts"
+            },
+            "media" => nil,
+            "participant_sid" => nil,
+            "sid" => "IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+          },
+          ...
+        ],
+        "meta" => %{
+          "first_page_url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages?%3FPage=0&PageSize=2&Page=0",
+          "key" => "messages",
+          "next_page_url" => nil,
+          "page" => 0,
+          "page_size" => 2,
+          "previous_page_url" => nil,
+          "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages?%3FPage=0&PageSize=2&Page=0"
+        }
+      }
+
+  """
+  def get_multiple_messages(conversation_sid, page \\ 0, page_size \\ 50) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages?Page=#{page}&PageSize=#{page_size}"
 
     api_get_request(api_url)
   end
 
-  def update_message(conversation_sid, message_id, message_body, attrs) do
-    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages/#{message_id}"
+  @doc """
+  Gets all messages
+
+  Parameters
+  - conversation_sid: coversation's sid
+
+  ## Examples
+    
+      iex> Twelixir.get_all_messages("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      %{
+        "messages" => [
+          %{
+            "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "attributes" => "{\"status\":\"unread\"}",
+            "author" => "Sample Author",
+            "body" => "Hi?",
+            "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "date_created" => "2021-02-25T10:28:38Z",
+            "date_updated" => "2021-02-25T10:28:38Z",
+            "delivery" => nil,
+            "index" => 0,
+            "links" => %{
+              "delivery_receipts" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Receipts"
+            },
+            "media" => nil,
+            "participant_sid" => nil,
+            "sid" => "IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+          },
+          ...
+        ],
+        "meta" => %{
+          "first_page_url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages?PageSize=50&Page=0",
+          "key" => "messages",
+          "next_page_url" => nil,
+          "page" => 0,
+          "page_size" => 50,
+          "previous_page_url" => nil,
+          "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages?PageSize=50&Page=0"
+        }
+      }
+
+  """
+  def get_all_messages(conversation_sid) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages"
+
+    api_get_request(api_url)
+  end
+
+  @doc """
+  Updates a message
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - message_sid: message's sid
+  - message_body: the actual message
+  - attrs: map (you can put any field you want for you own needs) - In my case this is where I monitor the message's read and unread state.
+
+  ## Examples
+    
+      iex> Twelixir.update_message("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "Hello", %{status: "read"})
+      %{
+        "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "attributes" => "{\"status\":\"read\"}",
+        "author" => "Sample Author",
+        "body" => "Hello",
+        "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "date_created" => "2021-02-25T10:28:38Z",
+        "date_updated" => "2021-02-25T10:46:05Z",
+        "delivery" => nil,
+        "index" => 0,
+        "links" => %{
+          "delivery_receipts" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Receipts"
+        },
+        "media" => nil,
+        "participant_sid" => nil,
+        "sid" => "IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      }
+
+  """
+  def update_message(conversation_sid, message_sid, message_body, attrs) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages/#{message_sid}"
 
     body = %{
       Attributes: attrs |> Jason.encode!(),
@@ -512,12 +700,23 @@ defmodule Twelixir do
     }
 
     api_post_request(api_url, body)
-    |> Map.fetch!(:body)
-    |> Jason.decode!()
   end
 
-  def delete_message(conversation_sid, message_id) do
-    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages/#{message_id}"
+  @doc """
+  Deletes a message
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - message_sid: message's sid
+
+  ## Examples
+    
+      iex> Twelixir.delete_message("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+      :ok
+
+  """
+  def delete_message(conversation_sid, message_sid) do
+    api_url = "#{@base_twilio_url}#{conversation_sid}/Messages/#{message_sid}"
     api_delete_request(api_url)
   end
 
@@ -566,8 +765,8 @@ defmodule Twelixir do
     with auth <- get_twilio_auth(),
          {_, api_response} <- HTTPoison.delete(api_url, [], hackney: auth) do
       case api_response.status_code do
-        204 -> IO.puts("Success - Deleted")
-        _ -> IO.puts("Failed - Status Code: #{api_response.status_code}")
+        204 -> IO.puts("Successfully deleted.")
+        _ -> IO.puts("Failed to delete, status code: #{api_response.status_code}")
       end
     end
   end
