@@ -242,7 +242,7 @@ defmodule Twelixir do
   end
 
   @doc """
-  Creates a sms type participant on a conversation
+  Creates an sms type participant on a conversation
 
   Parameters
   - conversation_sid: coversation's sid
