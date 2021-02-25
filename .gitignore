@@ -7,5 +7,6 @@ erl_crash.dump
 *.ez
 *.DS_Store
 *.beam
+*.tar
 /config/*.secret.exs
 .elixir_ls/
