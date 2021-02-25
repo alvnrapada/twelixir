@@ -32,6 +32,27 @@ defmodule YourAppModule do
   alias Twelixir
 
   Twelixir.create_conversation("Testing", %{type: "test"})
+  
+  # return: 
+  # %{
+  # "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  # "attributes" => "{\"type\":\"Testing Usage\"}",
+  # "chat_service_sid" => "IXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  # "date_created" => "2021-02-25T09:01:41Z",
+  # "date_updated" => "2021-02-25T09:01:41Z",
+  # "friendly_name" => "Sample",
+  # "links" => %{
+  #   "messages" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages",
+  #  "participants" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants",
+  #   "webhooks" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Webhooks"
+  # },
+  # "messaging_service_sid" => "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  # "sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  # "state" => "active",
+  # "timers" => %{},
+  # "unique_name" => nil,
+  # "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  # }
 end
 ```
 
