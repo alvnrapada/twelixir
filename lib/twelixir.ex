@@ -241,6 +241,39 @@ defmodule Twelixir do
     api_delete_request(api_url)
   end
 
+  @doc """
+  Creates a sms type participant on a conversation
+
+  Parameters
+  - conversation_sid: coversation's sid
+  - phone_number: integer
+  - country_code: :string
+  - twilio_proxy_mobile: :string
+  - attrs: map (you can put any field you want for you own needs)
+
+  ## Examples
+
+      iex> Twelixir.create_participant_sms("CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 9294229311, "US" "+16282003999", %{type: "web"})
+      %{
+        "account_sid" => "AXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "attributes" => "{\"type\":\"web\"}",
+        "conversation_sid" => "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "date_created" => "2021-02-12T21:33:59Z",
+        "date_updated" => "2021-02-12T21:33:59Z",
+        "identity" => nil,
+        "last_read_message_index" => nil,
+        "last_read_timestamp" => nil,
+        "messaging_binding" => %{
+          "address" => "+19294229311",
+          "proxy_address" => "+16282003999",
+          "type" => "sms"
+        },
+        "role_sid" => "RXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "sid" => "MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "url" => "https://conversations.twilio.com/v1/Conversations/CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Participants/MXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      }
+
+  """
   def create_participant_sms(
         conversation_sid,
         phone_number,
@@ -779,6 +812,13 @@ defmodule Twelixir do
    - Use two letter country codes - https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements
    - You can look up the phone carrier info with '?Type=carrier'; BUT IT COSTS EXTRA
    - You can attempt to lookup up the persons information with '?Type=caller-name'; BUT IT COSTS EXTRA
+
+
+  ## Examples
+    
+      iex> Twelixir.validate_mobile(9294229311, "US")
+      "+19294229311"
+
   """
   def validate_mobile(phone_number, country_code) do
     api_url =
